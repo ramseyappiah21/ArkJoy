@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String
+  createdAt    DateTime @default(now())
+  orders       Order[]  @relation("CreatedBy")
+}
+
+model Category {
+  id        String     @id @default(cuid())
+  name      String
+  sortOrder Int        @default(0)
+  items     MenuItem[]
+}
+
+model MenuItem {
+  id          String          @id @default(cuid())
+  name        String
+  description String?
+  priceCents  Int
+  imageUrl    String?
+  available   Boolean         @default(true)
+  categoryId  String
+  category    Category        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  modifiers   ModifierGroup[]
+  recipeLines RecipeLine[]
+  orderItems  OrderItem[]
+}
+
+model ModifierGroup {
+  id         String     @id @default(cuid())
+  name       String
+  required   Boolean    @default(false)
+  menuItemId String
+  menuItem   MenuItem   @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  modifiers  Modifier[]
+}
+
+model Modifier {
+  id            String              @id @default(cuid())
+  name          String
+  priceCents    Int                 @default(0)
+  groupId       String
+  group         ModifierGroup       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  orderItemMods OrderItemModifier[]
+}
+
+model Ingredient {
+  id           String         @id @default(cuid())
+  name         String
+  unit         String
+  stockQty     Float          @default(0)
+  lowStockAt   Float          @default(5)
+  recipeLines  RecipeLine[]
+  transactions InventoryTxn[]
+}
+
+model RecipeLine {
+  id           String     @id @default(cuid())
+  menuItemId   String
+  ingredientId String
+  qty          Float
+  menuItem     MenuItem   @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+
+  @@unique([menuItemId, ingredientId])
+}
+
+model Order {
+  id            String         @id @default(cuid())
+  orderNumber   Int
+  type          String
+  status        String         @default("open")
+  tableNumber   Int?
+  guestName     String?
+  paymentMethod String         @default("unpaid")
+  notes         String?
+  createdById   String?
+  createdBy     User?          @relation("CreatedBy", fields: [createdById], references: [id])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  completedAt   DateTime?
+  items         OrderItem[]
+  inventoryTxns InventoryTxn[]
+}
+
+model OrderItem {
+  id             String              @id @default(cuid())
+  orderId        String
+  menuItemId     String
+  name           String
+  unitPriceCents Int
+  quantity       Int                 @default(1)
+  notes          String?
+  order          Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItem       MenuItem            @relation(fields: [menuItemId], references: [id])
+  modifiers      OrderItemModifier[]
+}
+
+model OrderItemModifier {
+  id          String    @id @default(cuid())
+  orderItemId String
+  modifierId  String?
+  name        String
+  priceCents  Int       @default(0)
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  modifier    Modifier? @relation(fields: [modifierId], references: [id])
+}
+
+model InventoryTxn {
+  id           String     @id @default(cuid())
+  ingredientId String
+  orderId      String?
+  type         String
+  qtyDelta     Float
+  note         String?
+  createdAt    DateTime   @default(now())
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+  order        Order?     @relation(fields: [orderId], references: [id])
+}
+
+model AppMeta {
+  id              String @id @default("singleton")
+  nextOrderNumber Int    @default(1)
+}
+
+model Reservation {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String
+  partySize Int
+  date      String
+  time      String
+  notes     String?
+  status    String   @default("requested")
+  createdAt DateTime @default(now())
+}
