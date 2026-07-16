@@ -48,3 +48,9 @@ prisma/*.db
 prisma/*.db-journal
 *.db
 *.db-journal
+
+# local auth test artifacts
+cookies.txt
+cookies2.txt
+headers2.txt
+body2.txt
