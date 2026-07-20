@@ -288,36 +288,6 @@ textarea:focus {
   box-sizing: border-box;
 }
 
-.password-toggle {
-  position: absolute;
-  top: 50%;
-  right: 0.35rem;
-  transform: translateY(-50%);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.1rem;
-  height: 2.1rem;
-  margin: 0;
-  padding: 0;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--ink-muted);
-  box-shadow: none;
-  cursor: pointer;
-}
-
-.password-toggle:hover {
-  color: var(--ink);
-  background: var(--accent-soft);
-}
-
-.password-toggle:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
-}
-
 textarea {
   min-height: 80px;
   resize: vertical;
@@ -388,6 +358,32 @@ button.ghost,
 button:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+}
+
+button.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.35rem;
+  transform: translateY(-50%);
+  width: 2.1rem;
+  height: 2.1rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-muted);
+  box-shadow: none;
+}
+
+button.password-toggle:hover {
+  color: var(--ink);
+  background: var(--accent-soft);
+}
+
+button.password-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
 }
 
 /* ——— Tables ——— */
