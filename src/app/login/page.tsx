@@ -1,5 +1,6 @@
 "use client";
 
+import { PasswordInput } from "@/components/PasswordInput";
 import { signIn, signOut } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
@@ -62,9 +63,8 @@ function LoginForm() {
       </label>
       <label className="field">
         Password
-        <input
+        <PasswordInput
           name="password"
-          type="password"
           autoComplete="current-password"
           required
           placeholder="Enter your password"

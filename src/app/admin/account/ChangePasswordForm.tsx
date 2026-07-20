@@ -5,6 +5,7 @@ import {
   changePassword,
   type ChangePasswordState,
 } from "@/app/admin/account/actions";
+import { PasswordInput } from "@/components/PasswordInput";
 
 const initial: ChangePasswordState = {};
 
@@ -26,9 +27,8 @@ export function ChangePasswordForm() {
 
       <label className="field">
         Current password
-        <input
+        <PasswordInput
           name="currentPassword"
-          type="password"
           autoComplete="current-password"
           required
         />
@@ -36,9 +36,8 @@ export function ChangePasswordForm() {
       <label className="field">
         New password
         <span className="hint">At least 8 characters</span>
-        <input
+        <PasswordInput
           name="newPassword"
-          type="password"
           autoComplete="new-password"
           required
           minLength={8}
@@ -46,9 +45,8 @@ export function ChangePasswordForm() {
       </label>
       <label className="field">
         Confirm new password
-        <input
+        <PasswordInput
           name="confirmPassword"
-          type="password"
           autoComplete="new-password"
           required
           minLength={8}
