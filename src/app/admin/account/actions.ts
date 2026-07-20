@@ -33,11 +33,15 @@ export async function changePassword(
     return { error: "New password must be different from the current one." };
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-  });
+  const email = session.user.email?.toLowerCase().trim();
+  const user = email
+    ? await prisma.user.findUnique({ where: { email } })
+    : await prisma.user.findUnique({ where: { id: session.user.id } });
   if (!user) {
-    return { error: "Account not found." };
+    return {
+      error:
+        "Account not found. Sign out and sign in again, then try once more.",
+    };
   }
 
   const matches = await bcrypt.compare(current, user.passwordHash);

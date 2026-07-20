@@ -64,8 +64,8 @@ export const authOptions: NextAuthOptions = {
         return token;
       }
 
-      // Repair older JWTs that were issued without a role claim
-      if (token.email && !token.role) {
+      // Re-sync id/role from email so DB resets don't leave stale session ids
+      if (token.email) {
         const dbUser = await prisma.user.findUnique({
           where: { email: String(token.email).toLowerCase() },
         });
@@ -81,6 +81,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = token.id;
         session.user.role = token.role;
+        if (token.email) session.user.email = String(token.email);
       }
       return session;
     },
